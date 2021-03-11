@@ -1,6 +1,5 @@
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext as _
 from rest_framework import serializers
 
 from dry_rest_permissions.generics import DRYGlobalPermissionsField
@@ -88,17 +87,6 @@ class UserSerializer(serializers.ModelSerializer):
         """ Counts all unread notifications and returns the count """
         return Notification.objects.filter(user=obj, read=False).count()
 
-    def get_notifications(self, obj):
-        """ Gets all notifications for user """
-        return [
-            {
-                "id": notification.id,
-                "message": notification.message,
-                "read": notification.read,
-            }
-            for notification in Notification.objects.filter(user=obj)
-        ]
-
 
 class UserMemberSerializer(UserSerializer):
     """Serializer for user update to prevent them from updating extra_kwargs fields"""
@@ -164,8 +152,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
     def validate_email(self, data):
         if "@ntnu.no" in data:
             raise ValidationError(
-                _(
-                    "Vi kan ikke sende epost til @ntnu.no-adresser, bruk @stud.ntnu.no-adressen istedenfor."
-                )
+                "Vi kan ikke sende epost til @ntnu.no-adresser, bruk @stud.ntnu.no-adressen istedenfor."
             )
         return data

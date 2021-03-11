@@ -1,4 +1,3 @@
-from django.utils.translation import gettext as _
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.response import Response
@@ -53,7 +52,7 @@ class CheatsheetViewSet(viewsets.ModelViewSet):
         except Cheatsheet.DoesNotExist as cheatsheet_not_exist:
             capture_exception(cheatsheet_not_exist)
             return Response(
-                {"detail": _("Kokeboken eksisterer ikke")},
+                {"detail": "Kokeboken eksisterer ikke"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -65,7 +64,8 @@ class CheatsheetViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(
-            {"detail": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            {"detail": "Du har ikke tillatelse til å lage en oppskrift"},
+            status=status.HTTP_403_FORBIDDEN,
         )
 
     def update(self, request, *args, **kwargs):
@@ -80,7 +80,7 @@ class CheatsheetViewSet(viewsets.ModelViewSet):
         except Cheatsheet.DoesNotExist as cheatsheet_not_exist:
             capture_exception(cheatsheet_not_exist)
             return Response(
-                {"details": _("Oppskriften ble ikke funnet")},
+                {"details": "Oppskriften ble ikke funnet"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -91,16 +91,16 @@ class CheatsheetViewSet(viewsets.ModelViewSet):
             if is_admin_user(request):
                 super().destroy(cheatsheet)
                 return Response(
-                    {"detail": _("Oppskriften har blitt slettet")},
+                    {"detail": "Oppskriften har blitt slettet"},
                     status=status.HTTP_200_OK,
                 )
             return Response(
-                {"detail": _("Ikke riktig tilatelse for å slette en oppskrift")},
+                {"detail": "Du har ikke riktig tilatelser for å slette en oppskrift"},
                 status=status.HTTP_403_FORBIDDEN,
             )
         except Cheatsheet.DoesNotExist as cheatsheet_not_exist:
             capture_exception(cheatsheet_not_exist)
             return Response(
-                {"details": _("Oppskriften ble ikke funnet")},
+                {"details": "Oppskriften ble ikke funnet"},
                 status=status.HTTP_404_NOT_FOUND,
             )
