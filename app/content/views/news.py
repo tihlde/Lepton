@@ -2,7 +2,7 @@ from django.utils.translation import gettext as _
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 
-from dry_rest_permissions.generics import DRYPermissions
+from app.common.perm import BasicViewPermission
 
 from app.common.pagination import BasePagination
 from app.content.models import News
@@ -13,7 +13,7 @@ class NewsViewSet(viewsets.ModelViewSet):
 
     queryset = News.objects.all().order_by("-created_at")
     serializer_class = NewsSerializer
-    permission_classes = [DRYPermissions]
+    permission_classes = [BasicViewPermission]
     pagination_class = BasePagination
 
     def destroy(self, request, *args, **kwargs):

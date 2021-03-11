@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.response import Response
 
-from dry_rest_permissions.generics import DRYPermissions
+from app.common.perm import BasicViewPermission
 from sentry_sdk import capture_exception
 
 from app.common.drive_handler import upload_and_replace_url_with_cloud_link
@@ -17,7 +17,7 @@ from app.content.serializers import CheatsheetSerializer
 
 class CheatsheetViewSet(viewsets.ModelViewSet):
     serializer_class = CheatsheetSerializer
-    permission_classes = [DRYPermissions]
+    permission_classes = [BasicViewPermission]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     queryset = Cheatsheet.objects.all()
     pagination_class = BasePagination
